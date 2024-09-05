@@ -12,6 +12,7 @@ import java.util.UUID;
 @Service
 public class OrderService {
 
+    @Autowired
     private InventoryClient inventoryClient;
 
     @Autowired
