@@ -1,31 +1,22 @@
 package com.neil.gateway.routes;
 
-import org.springframework.cloud.gateway.server.mvc.handler.GatewayRouterFunctions;
-import org.springframework.cloud.gateway.server.mvc.handler.HandlerFunctions;
-import org.springframework.context.annotation.*;
-import org.springframework.web.servlet.function.*;
+import org.springframework.cloud.gateway.route.RouteLocator;
+import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
+import org.springframework.context.annotation.Bean;
 
-@Configuration
 public class Routes {
-
     @Bean
-    public RouterFunction<ServerResponse> productServiceRoute(){
-        return GatewayRouterFunctions.route("product_service")
-                .route(RequestPredicates.path("/api/product"), HandlerFunctions.http("http://localhost:8083"))
-                .build();
-    }
-
-    @Bean
-    public RouterFunction<ServerResponse> orderServiceRoute(){
-        return GatewayRouterFunctions.route("order_service")
-                .route(RequestPredicates.path("/api/order"), HandlerFunctions.http("http://localhost:8081"))
-                .build();
-    }
-
-    @Bean
-    public RouterFunction<ServerResponse> inventoryServiceRoute(){
-        return GatewayRouterFunctions.route("inventory_service")
-                .route(RequestPredicates.path("/api/inventory"), HandlerFunctions.http("http://localhost:8082"))
+    public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+        return builder.routes()
+                .route("order_service", r -> r.path("/api/order/**")
+//                        .filters(f -> f.stripPrefix(2))
+                        .uri("lb://ORDER-SERVICE"))
+                .route("inventory-service", r -> r.path("/api/inventory/**")
+//                        .filters(f -> f.stripPrefix(2))
+                        .uri("lb://INVENTORY-SERVICE"))
+                .route("product-service", r -> r.path("/api/product/**")
+//                        .filters(f -> f.stripPrefix(2))
+                        .uri("lb://PRODUCT-SERVICE"))
                 .build();
     }
 }
