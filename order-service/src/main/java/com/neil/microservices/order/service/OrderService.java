@@ -28,8 +28,8 @@ public class OrderService {
 
 
     public void placeOrder(OrderRequest orderRequest){
-//        boolean productInStock = inventoryClient.isInStock(orderRequest.skuCode(), orderRequest.quantity());
-//        if(productInStock) {
+       boolean productInStock = inventoryClient.isInStock(orderRequest.skuCode(), orderRequest.quantity());
+       if(productInStock) {
             Order order = new Order();
 
             order.setOrderNumber(UUID.randomUUID().toString());
@@ -42,9 +42,9 @@ public class OrderService {
             System.out.println(orderPlacedEvent);
             kafkaTemplate.send("order_placed", orderPlacedEvent);
             log.info("Order {} sent to kafka topic order_placed", orderPlacedEvent);
-//        }
-//        else{
-//            throw  new RuntimeException("Product with skuCode "+ orderRequest.skuCode()+" is not in stock");
-//        }
+       }
+       else{
+           throw  new RuntimeException("Product with skuCode "+ orderRequest.skuCode()+" is not in stock");
+       }
     }
 }
