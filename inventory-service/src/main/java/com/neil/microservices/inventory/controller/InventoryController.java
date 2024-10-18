@@ -15,4 +15,10 @@ public class InventoryController {
     public boolean isInStock(@RequestParam String skuCode, @RequestParam Integer quantity){
         return inventoryService.isInStock(skuCode, quantity);
     }
+
+    @PatchMapping
+    public boolean updateQuantity(@RequestBody String skuCode, @RequestBody Integer quantity){
+        return inventoryService.updateQuantity(skuCode, quantity);
+    }
+
 }

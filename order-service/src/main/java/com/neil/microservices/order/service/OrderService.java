@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -42,6 +41,14 @@ public class OrderService {
             System.out.println(orderPlacedEvent);
             kafkaTemplate.send("order_placed", orderPlacedEvent);
             log.info("Order {} sent to kafka topic order_placed", orderPlacedEvent);
+
+            boolean inventoryUpdated = inventoryClient.updateQuantity(orderRequest.skuCode(), orderRequest.quantity());
+            if(inventoryUpdated){
+                log.info("Inventory for product with skuCode {} has been updated for order placed", orderRequest.skuCode());
+            }
+            else{
+                log.error("Inventory could not be updated for current order");
+            }
        }
        else{
            throw  new RuntimeException("Product with skuCode "+ orderRequest.skuCode()+" is not in stock");
