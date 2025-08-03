@@ -1,5 +1,6 @@
 package com.neil.microservices.order.client;
 
+import com.neil.microservices.order.dto.InventoryOrderClientRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -12,5 +13,5 @@ public interface InventoryClient {
     boolean isInStock(@RequestParam  String skuCode,@RequestParam Integer quantity);
 
     @PatchMapping(value = "/api/inventory")
-    boolean updateQuantity(@RequestBody String skuCode, @RequestBody Integer quantity);
+    boolean updateQuantity(@RequestBody InventoryOrderClientRequest request);
 }

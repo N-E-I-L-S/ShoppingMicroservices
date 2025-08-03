@@ -12,6 +12,8 @@ public class InventoryService {
     private InventoryRepository inventoryRepository;
 
     public boolean isInStock(String skuCode, Integer quantity){
+        if(skuCode==null || quantity == null)
+            throw new RuntimeException("SKU Code or quantity or both missing");
         return inventoryRepository.existsBySkuCodeAndQuantityIsGreaterThanEqual(skuCode, quantity);
     }
 

@@ -1,6 +1,7 @@
 package com.neil.microservices.order.service;
 
 import com.neil.microservices.order.client.InventoryClient;
+import com.neil.microservices.order.dto.InventoryOrderClientRequest;
 import com.neil.microservices.order.dto.OrderRequest;
 import com.neil.microservices.order.event.OrderPlacedEvent;
 import com.neil.microservices.order.model.Order;
@@ -42,12 +43,14 @@ public class OrderService {
             kafkaTemplate.send("order_placed", orderPlacedEvent);
             log.info("Order {} sent to kafka topic order_placed", orderPlacedEvent);
 
-            boolean inventoryUpdated = inventoryClient.updateQuantity(orderRequest.skuCode(), orderRequest.quantity());
+           InventoryOrderClientRequest updateQuantityRequest = new InventoryOrderClientRequest(orderRequest.skuCode(), orderRequest.quantity());
+           boolean inventoryUpdated = inventoryClient.updateQuantity(updateQuantityRequest);
+
             if(inventoryUpdated){
                 log.info("Inventory for product with skuCode {} has been updated for order placed", orderRequest.skuCode());
             }
             else{
-                log.error("Inventory could not be updated for current order");
+                throw new RuntimeException("Inventory could not be updated for current order");
             }
        }
        else{

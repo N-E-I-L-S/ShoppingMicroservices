@@ -26,6 +26,7 @@ public class AuthController {
     @PostMapping("/token")
     public String getToken(@RequestBody AuthRequest authRequest) {
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
+        System.out.println("Accessible!");
         if (authenticate.isAuthenticated()) {
             return service.generateToken(authRequest.getUsername());
         } else {
